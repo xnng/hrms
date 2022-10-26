@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hrms.mapper.TeacherInfoMapper">
+
+    <select id="selectTeacherCount" resultType="java.lang.Integer">
+        select count(teacher_id) as teacherCount
+        from teacher_info;
+    </select>
+
+    <select id="selectDynamicTableCount" resultType="java.lang.Integer">
+        select count(id) as dynamicFieldCount
+        from teacher_info_dynamic;
+    </select>
+
+    <select id="selectDynamicDicTableCount" resultType="java.lang.Integer">
+        select count(id) as dynamicDicCount
+        from teacher_info_dynamic_dic;
+    </select>
+
+    <select id="selectDynamicValidateCount" resultType="java.lang.Integer">
+        select count(id) as dynamicValidateCount
+        from teacher_info_dynamic_validate;
+    </select>
+
+    <select id="selectTeacherInfoList" resultType="java.util.Map" parameterType="java.util.Map"
+            statementType="STATEMENT">
+        select teacher.teacher_id          as   teacherId,
+               teacher.examine_leader      as   examineLeader,
+               teacher.examine_hr          as   examineHr,
+               teacher.create_time         as   createTime,
+               teacher.update_time         as   updateTime,
+               dynamic.id                  as   dynamicId,
+               dynamic.type                as   dynamicType,
+               dynamic.name                as   dynamicName,
+               dic.id                      as   dicId,
+               dic.label                   as   dicLabel,
+               dic.value                   as   dicValue,
+               dic.teacher_info_dynamic_id as   dicTeacherInfoDynamicId,
+               validate.id                 as   validateId,
+               validate.required           as   validateRequired,
+               validate.max_length         as   validateMaxLength,
+               validate.datetime_format    as   validateDateTimeFormat,
+               validate.teacher_info_dynamic_id validateTeacherInfoDynamicId,
+               val.id                      as   valueId,
+               val.value                   as   value,
+               val.teacher_info_dynamic_id as   valTeacherInfoDynamicId,
+               val.teacher_info_id         as   valTeacherInfoId
+        from (select *
+              from teacher_info as teacher
+              limit ${params.mPageSize} offset ${params.mOffset}) as teacher
+                 left join teacher_info_dynamic dynamic on teacher.teacher_id
+                 left join teacher_info_dynamic_dic dic on dynamic.id = dic.teacher_info_dynamic_id
+                 left join teacher_info_dynamic_validate validate on dynamic.id = validate.teacher_info_dynamic_id
+                 left join teacher_info_dynamic_value val
+                           on dynamic.id = val.teacher_info_dynamic_id and dynamic.id = val.teacher_info_dynamic_id
+        order by teacherId desc
+    </select>
+
+    <delete id="deleteTeacherInfoByIds" parameterType="String">
+        delete from teacher_info where teacher_id in
+        <foreach item="teacherId" collection="array" open="(" separator="," close=")">
+            #{teacherId}
+        </foreach>
+    </delete>
+</mapper>

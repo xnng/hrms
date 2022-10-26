@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.hrms.mapper.MajorDicMapper">
+
+    <resultMap id="MajorDicResult" type="MajorDic">
+        <result property="majorName" column="major_name"/>
+        <result property="majorId" column="major_id"/>
+        <result property="majorCode" column="major_code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <select id="selectMajorDicByName" parameterType="MajorDic" resultMap="MajorDicResult">
+        select * from major_dic where major_name = #{majorName}
+    </select>
+</mapper>
